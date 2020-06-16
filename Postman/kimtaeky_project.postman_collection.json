@@ -1,0 +1,8233 @@
+{
+	"info": {
+		"_postman_id": "c06b6bf8-9f3d-4155-9e48-097ffa34c377",
+		"name": "final-kimtaky",
+		"description": "This collection tests the API specification for the final project of CS493-2020Spr.\nIn order to run this collection, it has 4 environment variables pre-defined:\n\napp_url\n- Set this to your app. E.g., when running locally set it to http://localhost:8080. When running the app on GCP. set it to https://myapp.appsport.com\n\ninvalid_shelf_id\n- I have set it to 1.\n\n\ninvalid_product_id\n-  I have set it to 1.\n\ninvalid_token\n- I have set if a part of old token. \n\nAlso, it have set 4 variables for a user to insert in the environment: jwt1, jwt2, user_id1, and user_id2.\nA user should input their token from the Google for jwt1 and jwt2.\nAs for the user ids, it doesn't do anything with this applications. ",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1-1 add a shelf 201",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c82f3b93-2979-47d4-8b9d-143824415368",
+						"exec": [
+							"pm.environment.set(\"shelf_id\", pm.response.json()[\"id\"]);",
+							"",
+							"pm.test(\"201 status code\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()[\"name\"]).to.eq(\"clothes\");",
+							"    pm.expect(pm.response.json()[\"location\"]).to.eq(\"Seattle\");",
+							"    pm.expect(pm.response.json()[\"size\"]).to.eq(99);",
+							"    pm.expect(pm.response.json()[\"phone\"]).to.eq(\"233-345-5678\");",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/shelves/\" + pm.response.json()[\"id\"];",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "text/html",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"clothes\",\r\n  \"location\": \"Seattle\",\r\n  \"size\": 99,\r\n  \"phone\": \"233-345-5678\"\r\n}"
+				},
+				"url": {
+					"raw": "{{app_url}}/shelves",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "1-1-1 405 DELETE for /shelves",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "bab61d26-7854-43c1-ad6d-b0e6d228a8c2",
+						"exec": [
+							"",
+							"pm.test(\"405 status code\", function () {",
+							"    pm.response.to.have.status(405);",
+							"});",
+							"",
+							"pm.test(\"405 error message\", function () {",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"Method not recognized\");",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "text/html",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/shelves",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "1-2 400 add shelf with missing attribute",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "bc0df3c1-e1e4-4c7e-91f9-f21edd33e107",
+						"exec": [
+							"pm.test(\"400 status code\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"",
+							"pm.test(\"400 error message\", function () {",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"The request object should have four attributes\");",
+							"});",
+							"",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"clothes2\",\r\n  \"location\": \"Cary\",\r\n  \"size\": 99\r\n}"
+				},
+				"url": {
+					"raw": "{{app_url}}/shelves",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "1-2-1 406 add shelf with another mime type",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "413ec78f-ad00-4ff3-b0f8-6951d9d005bb",
+						"exec": [
+							"pm.test(\"406 status code\", function () {",
+							"    pm.response.to.have.status(406);",
+							"});",
+							"",
+							"pm.test(\"406 error message\", function () {",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"Not Acceptable.\");",
+							"});",
+							"",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "text/css"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"clothes2\",\r\n  \"location\": \"Cary\",\r\n  \"size\": 99\r\n}"
+				},
+				"url": {
+					"raw": "{{app_url}}/shelves",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "1-2-2 406 add shelf with No mime type",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ac6ac702-793b-4372-ae0a-852382f2bebd",
+						"exec": [
+							"pm.test(\"406 status code\", function () {",
+							"    pm.response.to.have.status(406);",
+							"});",
+							"",
+							"pm.test(\"406 error message\", function () {",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"Not Acceptable.\");",
+							"});",
+							"",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "text/css",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"clothes2\",\r\n  \"location\": \"Cary\",\r\n  \"size\": 99\r\n}"
+				},
+				"url": {
+					"raw": "{{app_url}}/shelves",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "1-3 add 2nd shelf 201",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "035af68d-4632-41aa-a650-cbcbce4bf41d",
+						"exec": [
+							"pm.environment.set(\"shelf_id_1\", pm.response.json()[\"id\"]);",
+							"",
+							"pm.test(\"201 status code\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()[\"name\"]).to.eq(\"shoes\");",
+							"    pm.expect(pm.response.json()[\"location\"]).to.eq(\"Bellevue\");",
+							"    pm.expect(pm.response.json()[\"size\"]).to.eq(123);",
+							"    pm.expect(pm.response.json()[\"phone\"]).to.eq(\"255-345-5678\");",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/shelves/\" + pm.response.json()[\"id\"];",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);",
+							"}); ",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"shoes\",\r\n  \"location\": \"Bellevue\",\r\n  \"size\": 123,\r\n  \"phone\": \"255-345-5678\"\r\n}"
+				},
+				"url": {
+					"raw": "{{app_url}}/shelves",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "1-4 add 3rd shelf",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "eb1a3176-c7e0-4b28-bc6f-586b9be2cfe6",
+						"exec": [
+							"pm.environment.set(\"shelf_id_2\", pm.response.json()[\"id\"]);",
+							"",
+							"pm.test(\"201 status code\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()[\"name\"]).to.eq(\"bags\");",
+							"    pm.expect(pm.response.json()[\"location\"]).to.eq(\"Lake City\");",
+							"    pm.expect(pm.response.json()[\"size\"]).to.eq(150);",
+							"    pm.expect(pm.response.json()[\"phone\"]).to.eq(\"245-345-5678\");",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/shelves/\" + pm.response.json()[\"id\"];",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);",
+							"}); ",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"bags\",\r\n  \"location\": \"Lake City\",\r\n  \"size\": 150,\r\n  \"phone\": \"245-345-5678\"\r\n}"
+				},
+				"url": {
+					"raw": "{{app_url}}/shelves",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "1-5 add 4th shelf",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "6c5e01d4-adaf-4f9d-8e28-9045e26f40ba",
+						"exec": [
+							"pm.environment.set(\"shelf_id_3\", pm.response.json()[\"id\"]);",
+							"",
+							"pm.test(\"201 status code\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()[\"name\"]).to.eq(\"accessories\");",
+							"    pm.expect(pm.response.json()[\"location\"]).to.eq(\"Renton\");",
+							"    pm.expect(pm.response.json()[\"size\"]).to.eq(77);",
+							"    pm.expect(pm.response.json()[\"phone\"]).to.eq(\"212-345-5678\");",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/shelves/\" + pm.response.json()[\"id\"];",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"accessories\",\r\n  \"location\": \"Renton\",\r\n  \"size\": 77,\r\n  \"phone\": \"212-345-5678\"\r\n}"
+				},
+				"url": {
+					"raw": "{{app_url}}/shelves",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "1-6 add 5th shelf",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ea94fe7b-2fdd-4836-800d-452830eb0bf8",
+						"exec": [
+							"pm.environment.set(\"shelf_id_4\", pm.response.json()[\"id\"]);",
+							"",
+							"pm.test(\"201 status code\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()[\"name\"]).to.eq(\"Beauty\");",
+							"    pm.expect(pm.response.json()[\"location\"]).to.eq(\"Redmond\");",
+							"    pm.expect(pm.response.json()[\"size\"]).to.eq(55);",
+							"    pm.expect(pm.response.json()[\"phone\"]).to.eq(\"222-345-5678\");",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/shelves/\" + pm.response.json()[\"id\"];",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"Beauty\",\r\n  \"location\": \"Redmond\",\r\n  \"size\": 55,\r\n  \"phone\": \"222-345-5678\"\r\n}"
+				},
+				"url": {
+					"raw": "{{app_url}}/shelves",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "1-7 add 6th shelf",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f0f4adb2-9c32-4327-a625-7875dfcf421a",
+						"exec": [
+							"pm.environment.set(\"shelf_id_5\", pm.response.json()[\"id\"]);",
+							"",
+							"pm.test(\"201 status code\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()[\"name\"]).to.eq(\"kitchen tools\");",
+							"    pm.expect(pm.response.json()[\"location\"]).to.eq(\"Tukwila\");",
+							"    pm.expect(pm.response.json()[\"size\"]).to.eq(135);",
+							"    pm.expect(pm.response.json()[\"phone\"]).to.eq(\"278-345-5678\");",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/shelves/\" + pm.response.json()[\"id\"];",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"kitchen tools\",\r\n  \"location\": \"Tukwila\",\r\n  \"size\": 135,\r\n  \"phone\": \"278-345-5678\"\r\n}"
+				},
+				"url": {
+					"raw": "{{app_url}}/shelves",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2-1  get 1st shelf 200",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "694d3b6a-13a1-4006-9c95-078d431ba913",
+						"exec": [
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()[\"name\"]).to.eq(\"clothes\");",
+							"    pm.expect(pm.response.json()[\"location\"]).to.eq(\"Seattle\");",
+							"    pm.expect(pm.response.json()[\"size\"]).to.eq(99);",
+							"    pm.expect(pm.response.json()[\"phone\"]).to.eq(\"233-345-5678\");",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/shelves/\" + pm.response.json()[\"id\"];",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);",
+							"}); ",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/shelves/{{shelf_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves",
+						"{{shelf_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2-1-1 405  POST for /shelves/shelf_id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "8cc41be4-9497-42a4-aef1-b4d5abb75517",
+						"exec": [
+							"pm.test(\"405 status code\", function () {",
+							"    pm.response.to.have.status(405);",
+							"});",
+							"",
+							"pm.test(\"405 error message\", function () {",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"Method not recognized\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"clothes\",\r\n  \"location\": \"Seattle\",\r\n  \"size\": 99,\r\n  \"phone\": \"233-345-5678\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/shelves/{{shelf_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves",
+						"{{shelf_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2-1-2  406 get 1st shelf no mime",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "5e79d9bf-5033-4734-a117-b5e7cbb5f74d",
+						"exec": [
+							"pm.test(\"406 status code\", function () {",
+							"    pm.response.to.have.status(406);",
+							"});",
+							"",
+							"pm.test(\"406 error message\", function () {",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"Not Acceptable.\");",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/shelves/{{shelf_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves",
+						"{{shelf_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2-1-3  406 get 1st shelf different mime",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "aab69180-8cf8-4500-847f-b98c587e18b5",
+						"exec": [
+							"pm.test(\"406 status code\", function () {",
+							"    pm.response.to.have.status(406);",
+							"});",
+							"",
+							"pm.test(\"406 error message\", function () {",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"Not Acceptable.\");",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/javascript"
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/shelves/{{shelf_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves",
+						"{{shelf_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2-2  404 get a shelf with invalid id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "37b681d6-ac4a-4170-9c89-3387dd601d43",
+						"exec": [
+							"pm.test(\"404 not found\", function () {",
+							"    pm.response.to.have.status(404);",
+							"});",
+							"",
+							"",
+							"pm.test(\"404 error message\", function () {",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"No shelf with this shelf_id exists\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "4f69701d-f757-4226-8fc9-44cdc1c7fd50",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/shelves/{{invalid_shelf_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves",
+						"{{invalid_shelf_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2-3 get all shelves 200 pagination",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3376d0a3-3369-407b-956c-86a520da429d",
+						"exec": [
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"At least one shelf exists\", function () {",
+							"    pm.expect(Object.keys(pm.response.json()).length).to.be.at.least(1);",
+							"});",
+							"",
+							"",
+							"",
+							"pm.test(\"next is exist\", function () {",
+							"    ",
+							"    const next_url = pm.environment.get(\"app_url\") + \"/shelves?limit=5&offset=5\";",
+							"    pm.expect(pm.response.json()[\"next\"]).to.eq(next_url);",
+							"}); ",
+							"",
+							"pm.test(\"only 5 element shows\", function () {",
+							"     var jsonData = pm.response.json();",
+							"     var len = jsonData[\"shelves\"].length;",
+							"    //var jsonData = JSON.parse(responseBody);",
+							"    //var len = jsonData.length.toString();",
+							"    pm.expect(len).to.eql(5);",
+							"",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/shelves",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2-4 get pagination-2nd page",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "5ca11394-e5f6-4509-96a5-af1c4a6ee7ad",
+						"exec": [
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/shelves?limit=5&offset=5",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "5"
+						},
+						{
+							"key": "offset",
+							"value": "5"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2-5 406 get all shelves no mime",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "9b03aeb7-8283-45e2-a928-cf6427e7e6cd",
+						"exec": [
+							"pm.test(\"406 status code\", function () {",
+							"    pm.response.to.have.status(406);",
+							"});",
+							"",
+							"pm.test(\"406 error message\", function () {",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"Not Acceptable.\");",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/shelves",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2-6 406 get all shelves different mime",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ceb36d1c-97ef-4995-a52e-2022d16f946a",
+						"exec": [
+							"pm.test(\"406 status code\", function () {",
+							"    pm.response.to.have.status(406);",
+							"});",
+							"",
+							"pm.test(\"406 error message\", function () {",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"Not Acceptable.\");",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/pdf"
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/shelves",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3-1-1 edit patch shelf only one property 200",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f3714c74-e888-4b8b-8dbb-66ba0fcfe65a",
+						"exec": [
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()[\"name\"]).to.eq(\"clothes\");",
+							"    pm.expect(pm.response.json()[\"location\"]).to.eq(\"Admond\");",
+							"    pm.expect(pm.response.json()[\"size\"]).to.eq(99);",
+							"    pm.expect(pm.response.json()[\"phone\"]).to.eq(\"233-345-5678\");",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/shelves/\" + pm.response.json()[\"id\"];",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);",
+							"}); "
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \r\n  \"location\": \"Admond\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/shelves/{{shelf_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves",
+						"{{shelf_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3-1-2  get 1st shelf and check",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "da2c0a6c-8ba0-453e-8e31-fb9dcb825008",
+						"exec": [
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()[\"name\"]).to.eq(\"clothes\");",
+							"    pm.expect(pm.response.json()[\"location\"]).to.eq(\"Admond\");",
+							"    pm.expect(pm.response.json()[\"size\"]).to.eq(99);",
+							"    pm.expect(pm.response.json()[\"phone\"]).to.eq(\"233-345-5678\");",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/shelves/\" + pm.response.json()[\"id\"];",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);",
+							"}); "
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/shelves/{{shelf_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves",
+						"{{shelf_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3-1-3 edit patch 2nd shelf all  property",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c2e3e652-ce56-4e9c-b829-e0e357537385",
+						"exec": [
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()[\"name\"]).to.eq(\"Edit-shoes\");",
+							"    pm.expect(pm.response.json()[\"location\"]).to.eq(\"Bothell\");",
+							"    pm.expect(pm.response.json()[\"size\"]).to.eq(546);",
+							"    pm.expect(pm.response.json()[\"phone\"]).to.eq(\"666-345-5678\");",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/shelves/\" + pm.response.json()[\"id\"];",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);",
+							"}); ",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"Edit-shoes\",\r\n  \"location\": \"Bothell\",\r\n  \"size\": 546,\r\n  \"phone\": \"666-345-5678\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/shelves/{{shelf_id_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves",
+						"{{shelf_id_1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3-1-4 get 2nd shelf and check",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "17c832dc-adfe-4acb-8a64-d843e42f2310",
+						"exec": [
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()[\"name\"]).to.eq(\"Edit-shoes\");",
+							"    pm.expect(pm.response.json()[\"location\"]).to.eq(\"Bothell\");",
+							"    pm.expect(pm.response.json()[\"size\"]).to.eq(546);",
+							"    pm.expect(pm.response.json()[\"phone\"]).to.eq(\"666-345-5678\");",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/shelves/\" + pm.response.json()[\"id\"];",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);",
+							"}); ",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/shelves/{{shelf_id_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves",
+						"{{shelf_id_1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3-1-5 406 edit patch shelf with another mime type",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "e5a6028f-d428-425c-92d2-c526769d5714",
+						"exec": [
+							"pm.test(\"406 status code\", function () {",
+							"    pm.response.to.have.status(406);",
+							"});",
+							"",
+							"pm.test(\"406 error message\", function () {",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"Not Acceptable.\");",
+							"});",
+							"",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/javascript"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"clothes2\",\r\n  \"location\": \"Cary\",\r\n  \"size\": 99\r\n}"
+				},
+				"url": {
+					"raw": "{{app_url}}/shelves/shelf_id",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves",
+						"shelf_id"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3-1-6 406 edit patch shelf with No mime type",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "2a826a14-6f5e-4c98-a3d3-5b73a29fbabe",
+						"exec": [
+							"pm.test(\"406 status code\", function () {",
+							"    pm.response.to.have.status(406);",
+							"});",
+							"",
+							"pm.test(\"406 error message\", function () {",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"Not Acceptable.\");",
+							"});",
+							"",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "text/css",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"clothes2\",\r\n  \"location\": \"Cary\",\r\n  \"size\": 99\r\n}"
+				},
+				"url": {
+					"raw": "{{app_url}}/shelves/shelf_id",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves",
+						"shelf_id"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3-1-7 404 edit patch shelf with invalid id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "6da21eb7-1d3b-4d82-8330-b798bca9ae09",
+						"exec": [
+							"pm.test(\"404 not found\", function () {",
+							"    pm.response.to.have.status(404);",
+							"});",
+							"",
+							"",
+							"pm.test(\"404 error message\", function () {",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"No shelf with this shelf_id exists\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "277b3b62-80b3-45d0-95b0-d01d60c1a31f",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"Edit-shoes2\",\r\n  \"location\": \"Edit-Bellevue\",\r\n  \"size\": 546,\r\n  \"phone\": \"666-345-5678\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/shelves/{{invalid_shelf_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves",
+						"{{invalid_shelf_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3-1-8 400 edit patch no property",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "83445c8e-efbd-4c5a-ac81-fa530baab614",
+						"exec": [
+							"pm.test(\"400 Bad Request\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"",
+							"",
+							"pm.test(\"400 error message\", function () {",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"You need to change at least one property\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/shelves/{{shelf_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves",
+						"{{shelf_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3-2-1 edit put shelf all  property 200",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "97229ae2-868e-4ed5-89b7-3b5b41000d66",
+						"exec": [
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()[\"name\"]).to.eq(\"clothes2\");",
+							"    pm.expect(pm.response.json()[\"location\"]).to.eq(\"Kirkland\");",
+							"    pm.expect(pm.response.json()[\"size\"]).to.eq(222);",
+							"    pm.expect(pm.response.json()[\"phone\"]).to.eq(\"666-345-5678\");",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/shelves/\" + pm.response.json()[\"id\"];",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);",
+							"}); "
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"clothes2\",\r\n  \"location\": \"Kirkland\",\r\n  \"size\": 222,\r\n  \"phone\": \"666-345-5678\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/shelves/{{shelf_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves",
+						"{{shelf_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3-2-2  get 1st shelf and check",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "6e412208-9d64-44b0-b44d-cd5bfa7e555d",
+						"exec": [
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()[\"name\"]).to.eq(\"clothes2\");",
+							"    pm.expect(pm.response.json()[\"location\"]).to.eq(\"Kirkland\");",
+							"    pm.expect(pm.response.json()[\"size\"]).to.eq(222);",
+							"    pm.expect(pm.response.json()[\"phone\"]).to.eq(\"666-345-5678\");",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/shelves/\" + pm.response.json()[\"id\"];",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);",
+							"}); "
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/shelves/{{shelf_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves",
+						"{{shelf_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3-2-3 400 edit put shelf only one property",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "85df84f1-db07-45a4-a66a-6c24b276fcba",
+						"exec": [
+							"pm.test(\"400 status code\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"",
+							"pm.test(\"400 error message\", function () {",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"The request object should have four attributes\");",
+							"});",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \r\n  \"location\": \"Admond\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/shelves/{{shelf_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves",
+						"{{shelf_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3-2-4 406 edit put shelf with another mime type",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "4778b399-381f-467e-93e2-d0af7b4a8a62",
+						"exec": [
+							"pm.test(\"406 status code\", function () {",
+							"    pm.response.to.have.status(406);",
+							"});",
+							"",
+							"pm.test(\"406 error message\", function () {",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"Not Acceptable.\");",
+							"});",
+							"",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/javascript"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"Edit-shoes2\",\r\n  \"location\": \"Edit-Bellevue\",\r\n  \"size\": 546,\r\n  \"phone\": \"666-345-5678\"\r\n}"
+				},
+				"url": {
+					"raw": "{{app_url}}/shelves/shelf_id",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves",
+						"shelf_id"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3-2-5 406 edit put shelf with No mime type",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "37ef974f-2c57-4aa3-97a0-541caf76279f",
+						"exec": [
+							"pm.test(\"406 status code\", function () {",
+							"    pm.response.to.have.status(406);",
+							"});",
+							"",
+							"pm.test(\"406 error message\", function () {",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"Not Acceptable.\");",
+							"});",
+							"",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "text/css",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"Edit-shoes2\",\r\n  \"location\": \"Edit-Bellevue\",\r\n  \"size\": 546,\r\n  \"phone\": \"666-345-5678\"\r\n}"
+				},
+				"url": {
+					"raw": "{{app_url}}/shelves/shelf_id",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves",
+						"shelf_id"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3-2-6 404 edit put shelf with invalid id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3a621ef7-c68f-4d89-ab47-5253eee9bc53",
+						"exec": [
+							"pm.test(\"404 not found\", function () {",
+							"    pm.response.to.have.status(404);",
+							"});",
+							"",
+							"",
+							"pm.test(\"404 error message\", function () {",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"No shelf with this shelf_id exists\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "f9fbf218-f233-449d-af80-f6bc356c0d6e",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"Edit-shoes2\",\r\n  \"location\": \"Edit-Bellevue\",\r\n  \"size\": 546,\r\n  \"phone\": \"666-345-5678\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/shelves/{{invalid_shelf_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves",
+						"{{invalid_shelf_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3-3 405 POST for /shelve/shelf_id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b3f64415-1e40-4248-b713-b884b13706af",
+						"exec": [
+							"",
+							"pm.test(\"405 status code\", function () {",
+							"    pm.response.to.have.status(405);",
+							"});",
+							"",
+							"pm.test(\"405 error message\", function () {",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"Method not recognized\");",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "text/html",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"clothes\",\r\n  \"location\": \"Seattle\",\r\n  \"size\": 99,\r\n  \"phone\": \"233-345-5678\"\r\n}"
+				},
+				"url": {
+					"raw": "{{app_url}}/shelves/{{shelf_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves",
+						"{{shelf_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "4-1 add a product 201",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "16abb5f4-fc2e-4cf3-a0a0-998252033c3f",
+						"exec": [
+							"pm.environment.set(\"product_id\", pm.response.json()[\"id\"]);",
+							"",
+							"pm.test(\"201 status code\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()[\"price\"]).to.eq(45.50);",
+							"    pm.expect(pm.response.json()[\"quantity\"]).to.eq(10);",
+							"    pm.expect(pm.response.json()[\"name\"]).to.eq(\"Denim skirt\");",
+							"    pm.expect(pm.response.json()[\"type\"]).to.eq(\"clothes\");",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/products/\" + pm.response.json()[\"id\"];",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);",
+							"}); ",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"Denim skirt\",\r\n  \"type\": \"clothes\",\r\n  \"price\": 45.50,\r\n  \"quantity\": 10\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/products",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "4-1-1 405 DELETE for /products",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b4b6af31-c784-443b-bdaf-69cb7e456214",
+						"exec": [
+							"",
+							"pm.test(\"405 status code\", function () {",
+							"    pm.response.to.have.status(405);",
+							"});",
+							"",
+							"pm.test(\"405 error message\", function () {",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"Method not recognized\");",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "text/html",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"clothes\",\r\n  \"location\": \"Seattle\",\r\n  \"size\": 99,\r\n  \"phone\": \"233-345-5678\"\r\n}"
+				},
+				"url": {
+					"raw": "{{app_url}}/products",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "4-2 400 add product with missing attribute",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "6371f2ee-350d-4201-a0d8-91e245e745e7",
+						"exec": [
+							"pm.test(\"400 status code\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"",
+							"pm.test(\"400 error message\", function () {",
+							"     pm.expect(pm.response.json()[\"Error\"]).to.eq(\"The request object is missing at least one of the required attributes\");",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"pattern skirt\",\r\n  \"type\": \"clothes\",\r\n  \"quantity\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/products",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "4-2-1 406 add product with another mime type",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "dfcc1534-9ea8-4dba-a0ae-7b5a163649ec",
+						"exec": [
+							"pm.test(\"406 status code\", function () {",
+							"    pm.response.to.have.status(406);",
+							"});",
+							"",
+							"pm.test(\"400 error message\", function () {",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"Not Acceptable.\");",
+							"});",
+							"",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "text/css"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"clothes2\",\r\n  \"location\": \"Cary\",\r\n  \"size\": 99\r\n}"
+				},
+				"url": {
+					"raw": "{{app_url}}/products",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "4-2-2 406 add product with No mime type",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "78ce2b2c-b710-4b1f-a234-95481230c9a9",
+						"exec": [
+							"pm.test(\"406 status code\", function () {",
+							"    pm.response.to.have.status(406);",
+							"});",
+							"",
+							"pm.test(\"400 error message\", function () {",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"Not Acceptable.\");",
+							"});",
+							"",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "text/css",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"clothes2\",\r\n  \"location\": \"Cary\",\r\n  \"size\": 99\r\n}"
+				},
+				"url": {
+					"raw": "{{app_url}}/products",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "4-3-1 missing token 401",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "60bbbcd4-5cbb-4ca1-872d-86369c9c2cf1",
+						"exec": [
+							"pm.test(\"401 status code\", function () {",
+							"    pm.response.to.have.status(401);",
+							"});",
+							"",
+							"pm.test(\"401 error message\", function () {",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"Missing or Invalid JWT\");",
+							"});",
+							"",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "text/css",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"clothes2\",\r\n  \"location\": \"Cary\",\r\n  \"size\": 99,\r\n  \"quantity\": 10\r\n}"
+				},
+				"url": {
+					"raw": "{{app_url}}/products",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "4-3-2 invalid token 401",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "db38776d-fcb8-458c-9d7b-0f050d950ec5",
+						"exec": [
+							"pm.test(\"401 status code\", function () {",
+							"    pm.response.to.have.status(401);",
+							"});",
+							"",
+							"pm.test(\"401 error message\", function () {",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"Missing or Invalid JWT\");",
+							"});",
+							"",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{invalid_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "text/css",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"clothes2\",\r\n  \"location\": \"Cary\",\r\n  \"size\": 99,\r\n  \"quantity\": 10\r\n}"
+				},
+				"url": {
+					"raw": "{{app_url}}/products",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "4-4-1 add 2nd product 201",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "e83c51ef-0145-44f3-a032-d73880ef21d4",
+						"exec": [
+							"pm.environment.set(\"prod_id_1\", pm.response.json()[\"id\"]);",
+							"",
+							"pm.test(\"201 status code\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()[\"price\"]).to.eq(200.00);",
+							"    pm.expect(pm.response.json()[\"quantity\"]).to.eq(5);",
+							"    pm.expect(pm.response.json()[\"name\"]).to.eq(\"Blue Spring suit\");",
+							"    pm.expect(pm.response.json()[\"type\"]).to.eq(\"clothes\");",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/products/\" + pm.response.json()[\"id\"];",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);",
+							"}); ",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"Blue Spring suit\",\r\n  \"type\": \"clothes\",\r\n  \"price\": 200.00,\r\n  \"quantity\": 5\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/products",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "4-4-2 add 3rd product 201",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b6faf3d0-feab-46ef-b7fe-8ca730473ad9",
+						"exec": [
+							"pm.environment.set(\"prod_id_2\", pm.response.json()[\"id\"]);",
+							"",
+							"pm.test(\"201 status code\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()[\"price\"]).to.eq(22.50);",
+							"    pm.expect(pm.response.json()[\"quantity\"]).to.eq(7);",
+							"    pm.expect(pm.response.json()[\"name\"]).to.eq(\"Dot necktie\");",
+							"    pm.expect(pm.response.json()[\"type\"]).to.eq(\"clothes\");",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/products/\" + pm.response.json()[\"id\"];",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);",
+							"}); ",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"Dot necktie\",\r\n  \"type\": \"clothes\",\r\n  \"price\": 22.50,\r\n  \"quantity\": 7\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/products",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "4-4-2 add 4th product 201",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "52bb8791-e112-452c-9cea-a7e554fa3c0d",
+						"exec": [
+							"pm.environment.set(\"prod_id_3\", pm.response.json()[\"id\"]);",
+							"",
+							"pm.test(\"201 status code\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()[\"price\"]).to.eq(10.50);",
+							"    pm.expect(pm.response.json()[\"quantity\"]).to.eq(20);",
+							"    pm.expect(pm.response.json()[\"name\"]).to.eq(\"sports socks\");",
+							"    pm.expect(pm.response.json()[\"type\"]).to.eq(\"clothes\");",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/products/\" + pm.response.json()[\"id\"];",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);",
+							"}); "
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"sports socks\",\r\n  \"type\": \"clothes\",\r\n  \"price\": 10.50,\r\n  \"quantity\": 20\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/products",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "4-4-3 add 5th product 201",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d0b948bf-f8e3-46ab-9ca9-b06d7abb57db",
+						"exec": [
+							"pm.environment.set(\"prod_id_4\", pm.response.json()[\"id\"]);",
+							"",
+							"pm.test(\"201 status code\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()[\"price\"]).to.eq(35);",
+							"    pm.expect(pm.response.json()[\"quantity\"]).to.eq(15);",
+							"    pm.expect(pm.response.json()[\"name\"]).to.eq(\"summer pants\");",
+							"    pm.expect(pm.response.json()[\"type\"]).to.eq(\"clothes\");",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/products/\" + pm.response.json()[\"id\"];",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);",
+							"}); "
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"summer pants\",\r\n  \"type\": \"clothes\",\r\n  \"price\": 35,\r\n  \"quantity\": 15\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/products",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "4-4-5 add 6th product 201",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "af9697a4-609c-4f46-9321-17ae598a6466",
+						"exec": [
+							"pm.environment.set(\"prod_id_5\", pm.response.json()[\"id\"]);",
+							"",
+							"pm.test(\"201 status code\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()[\"price\"]).to.eq(120);",
+							"    pm.expect(pm.response.json()[\"quantity\"]).to.eq(4);",
+							"    pm.expect(pm.response.json()[\"name\"]).to.eq(\"Rider jumper\");",
+							"    pm.expect(pm.response.json()[\"type\"]).to.eq(\"clothes\");",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/products/\" + pm.response.json()[\"id\"];",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);",
+							"}); "
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"Rider jumper\",\r\n  \"type\": \"clothes\",\r\n  \"price\": 120,\r\n  \"quantity\": 4\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/products",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "4-5 add product by 2nd user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "03813a23-a0b4-4193-aada-3327dad95421",
+						"exec": [
+							"pm.environment.set(\"prod_id_6\", pm.response.json()[\"id\"]);",
+							"",
+							"pm.test(\"201 status code\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()[\"price\"]).to.eq(27);",
+							"    pm.expect(pm.response.json()[\"quantity\"]).to.eq(12);",
+							"    pm.expect(pm.response.json()[\"name\"]).to.eq(\"Backpack\");",
+							"    pm.expect(pm.response.json()[\"type\"]).to.eq(\"bags\");",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/products/\" + pm.response.json()[\"id\"];",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);",
+							"}); "
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"Backpack\",\r\n  \"type\": \"bags\",\r\n  \"price\": 27,\r\n  \"quantity\": 12\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/products",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "4-5-1 add 2nd product by 2nd user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "69bd485b-c0aa-47a6-8340-575078456b7b",
+						"exec": [
+							"pm.environment.set(\"prod_id_7\", pm.response.json()[\"id\"]);",
+							"",
+							"pm.test(\"201 status code\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()[\"price\"]).to.eq(95);",
+							"    pm.expect(pm.response.json()[\"quantity\"]).to.eq(5);",
+							"    pm.expect(pm.response.json()[\"name\"]).to.eq(\"Handbag\");",
+							"    pm.expect(pm.response.json()[\"type\"]).to.eq(\"bags\");",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/products/\" + pm.response.json()[\"id\"];",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);",
+							"}); "
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"Handbag\",\r\n  \"type\": \"bags\",\r\n  \"price\": 95,\r\n  \"quantity\": 5\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/products",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "5-1 get a single product 200",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c1fdd6bb-0f2a-42ba-be08-204dbcda22ff",
+						"exec": [
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()[\"price\"]).to.eq(45.50);",
+							"    pm.expect(pm.response.json()[\"quantity\"]).to.eq(10);",
+							"    pm.expect(pm.response.json()[\"name\"]).to.eq(\"Denim skirt\");",
+							"    pm.expect(pm.response.json()[\"type\"]).to.eq(\"clothes\");",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/products/\" + pm.response.json()[\"id\"];",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);",
+							"}); ",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/products/{{product_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products",
+						"{{product_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "5-1-1 406 get a single product no mime",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "42bd91f0-c771-4033-86ec-511efcad004a",
+						"exec": [
+							"pm.test(\"406 status code\", function () {",
+							"    pm.response.to.have.status(406);",
+							"});",
+							"",
+							"pm.test(\"406 error message\", function () {",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"Not Acceptable.\");",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/products/{{product_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products",
+						"{{product_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "5-1-2 406 get a single product different mime",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b7ff9adf-774b-4660-af8c-ef3fa1370b42",
+						"exec": [
+							"pm.test(\"406 status code\", function () {",
+							"    pm.response.to.have.status(406);",
+							"});",
+							"",
+							"pm.test(\"406 error message\", function () {",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"Not Acceptable.\");",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/pdf"
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/products/{{product_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products",
+						"{{product_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "5-2 404 get load with invalid id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "18525799-e4ae-4fbb-b24c-e1ce1db257ff",
+						"exec": [
+							"pm.test(\"404 not found\", function () {",
+							"    pm.response.to.have.status(404);",
+							"});",
+							"",
+							"",
+							"pm.test(\"404 error message\", function () {",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"No product with this product_id exists\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/products/{{invalid_prod_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products",
+						"{{invalid_prod_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "5-2-1 403 get product with another user jwt",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "207b1fe7-f1a8-4ca6-bf3b-0653296147f3",
+						"exec": [
+							"pm.test(\"403 Forbidden\", function () {",
+							"    pm.response.to.have.status(403);",
+							"});",
+							"",
+							"",
+							"pm.test(\"403 error message\", function () {",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"You can only get your product.\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/products/{{prod_id_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products",
+						"{{prod_id_1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "5-3 get all product for 1st user 200 pagination",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "80234a46-49aa-42fc-90e6-378b57a67289",
+						"exec": [
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"At least one boat exists\", function () {",
+							"    pm.expect(Object.keys(pm.response.json()).length).to.be.at.least(1);",
+							"});",
+							"",
+							"pm.test(\"next is exist\", function () {",
+							"    ",
+							"    const next_url = pm.environment.get(\"app_url\") + \"/products?limit=5&offset=5\";",
+							"    pm.expect(pm.response.json()[\"next\"]).to.eq(next_url);",
+							"}); ",
+							"",
+							"pm.test(\"only 5 element shows\", function () {",
+							"     var jsonData = pm.response.json();",
+							"     var len = jsonData[\"products\"].length;",
+							"    //var jsonData = JSON.parse(responseBody);",
+							"    //var len = jsonData.length.toString();",
+							"    pm.expect(len).to.eql(5);",
+							"",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/products",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "5-3-1 406 get all product no mime",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "785c529c-44bf-4b20-824c-6d4777e5c4ef",
+						"exec": [
+							"pm.test(\"406 status code\", function () {",
+							"    pm.response.to.have.status(406);",
+							"});",
+							"",
+							"pm.test(\"406 error message\", function () {",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"Not Acceptable.\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/products",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "5-3-2 406 get all product different mime",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f252e525-4388-4408-b2a9-c73f7de6180e",
+						"exec": [
+							"pm.test(\"406 status code\", function () {",
+							"    pm.response.to.have.status(406);",
+							"});",
+							"",
+							"pm.test(\"406 error message\", function () {",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"Not Acceptable.\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/pdf"
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/products",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "5-4 product pagination-2nd page",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/products?limit=5&offset=5",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "5"
+						},
+						{
+							"key": "offset",
+							"value": "5"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "5-5 get all product for 2nd user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "6e647a33-2f3d-46e5-a80b-b592e44d216a",
+						"exec": [
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"At least one boat exists\", function () {",
+							"    pm.expect(Object.keys(pm.response.json()).length).to.be.at.least(1);",
+							"});",
+							"",
+							"pm.test(\"only 2nd user's product shows\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    for( var i=0; i < (jsonData[\"products\"].length)-1; i++){",
+							"        pm.expect(jsonData[\"products\"][i][\"owner\"]).to.eq(jsonData[\"products\"][i+1][\"owner\"]);",
+							"        ",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/products",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "5-6-1 get a product missing token 401",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a9a43adc-30bc-4c6c-abbd-03260402fbdd",
+						"exec": [
+							"pm.test(\"401 status code\", function () {",
+							"    pm.response.to.have.status(401);",
+							"});",
+							"",
+							"pm.test(\"401 error message\", function () {",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"Missing or Invalid JWT\");",
+							"});",
+							"",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true,
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "text/css",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{app_url}}/products",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "5-6-2 get a product invalid token 401",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "bfa1c353-d621-4ff8-8672-bddb741e63d8",
+						"exec": [
+							"pm.test(\"401 status code\", function () {",
+							"    pm.response.to.have.status(401);",
+							"});",
+							"",
+							"pm.test(\"401 error message\", function () {",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"Missing or Invalid JWT\");",
+							"});",
+							"",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true,
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{invalid_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "text/css",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{app_url}}/products",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "5-7-1 get all product missing token 401",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "2386c36f-8a47-461b-80eb-5c561806087a",
+						"exec": [
+							"pm.test(\"401 status code\", function () {",
+							"    pm.response.to.have.status(401);",
+							"});",
+							"",
+							"pm.test(\"401 error message\", function () {",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"Missing or Invalid JWT\");",
+							"});",
+							"",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "text/css",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/products/{{product_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products",
+						"{{product_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "5-7-2 get all product invalid token 401",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "39d10939-277e-47ce-ae87-975c0019e0a8",
+						"exec": [
+							"pm.test(\"401 status code\", function () {",
+							"    pm.response.to.have.status(401);",
+							"});",
+							"",
+							"pm.test(\"401 error message\", function () {",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"Missing or Invalid JWT\");",
+							"});",
+							"",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{invalid_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "text/css",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/products/{{product_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products",
+						"{{product_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "6-1-1 edit patch product only one property",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1d3e5a81-2ae5-41a7-b9f4-599534bdfe8a",
+						"exec": [
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()[\"price\"]).to.eq(30);",
+							"    pm.expect(pm.response.json()[\"quantity\"]).to.eq(10);",
+							"    pm.expect(pm.response.json()[\"name\"]).to.eq(\"Denim skirt\");",
+							"    pm.expect(pm.response.json()[\"type\"]).to.eq(\"clothes\");",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/products/\" + pm.response.json()[\"id\"];",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);",
+							"}); "
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \r\n  \"price\": 30\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/products/{{product_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products",
+						"{{product_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "6-1-2  get 1st product and check",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0832a389-1020-496c-9c8a-4bc0595330cb",
+						"exec": [
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()[\"price\"]).to.eq(30);",
+							"    pm.expect(pm.response.json()[\"quantity\"]).to.eq(10);",
+							"    pm.expect(pm.response.json()[\"name\"]).to.eq(\"Denim skirt\");",
+							"    pm.expect(pm.response.json()[\"type\"]).to.eq(\"clothes\");",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/products/\" + pm.response.json()[\"id\"];",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);",
+							"}); "
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/products/{{product_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products",
+						"{{product_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "6-1-3 edit patch product for all  properties",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3e5f9d93-a287-4859-8ba3-eee92bd3b99d",
+						"exec": [
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()[\"price\"]).to.eq(200.00);",
+							"    pm.expect(pm.response.json()[\"quantity\"]).to.eq(5);",
+							"    pm.expect(pm.response.json()[\"name\"]).to.eq(\"Edit-Blue Spring suit\");",
+							"    pm.expect(pm.response.json()[\"type\"]).to.eq(\"clothes\");",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/products/\" + pm.response.json()[\"id\"];",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);",
+							"}); "
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"Edit-Blue Spring suit\",\r\n  \"type\": \"clothes\",\r\n  \"price\": 200.00,\r\n  \"quantity\": 5\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/products/{{prod_id_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products",
+						"{{prod_id_1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "6-1-4 get 2nd product for all edit",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "5f0d21cd-b830-4f24-8707-a14e78d08613",
+						"exec": [
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()[\"price\"]).to.eq(200.00);",
+							"    pm.expect(pm.response.json()[\"quantity\"]).to.eq(5);",
+							"    pm.expect(pm.response.json()[\"name\"]).to.eq(\"Edit-Blue Spring suit\");",
+							"    pm.expect(pm.response.json()[\"type\"]).to.eq(\"clothes\");",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/products/\" + pm.response.json()[\"id\"];",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);",
+							"}); ",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/products/{{prod_id_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products",
+						"{{prod_id_1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "6-1-5 406 edit patch product with another mime type",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "82f0ebcf-3bc7-4318-bde5-499281910d82",
+						"exec": [
+							"pm.test(\"406 status code\", function () {",
+							"    pm.response.to.have.status(406);",
+							"});",
+							"",
+							"pm.test(\"406 error message\", function () {",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"Not Acceptable.\");",
+							"});",
+							"",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/javascript"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"Yellow Spring suit\",\r\n  \"type\": \"clothes\",\r\n  \"price\": 80.00,\r\n  \"quantity\": 2\r\n}"
+				},
+				"url": {
+					"raw": "{{app_url}}/products/product_id",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products",
+						"product_id"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "6-1-6 406 edit patch product with No mime type",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "54acd5ca-8374-4654-90a1-ab1f3efdbef1",
+						"exec": [
+							"pm.test(\"406 status code\", function () {",
+							"    pm.response.to.have.status(406);",
+							"});",
+							"",
+							"pm.test(\"406 error message\", function () {",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"Not Acceptable.\");",
+							"});",
+							"",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "text/css",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"Yellow Spring suit\",\r\n  \"type\": \"clothes\",\r\n  \"price\": 80.00,\r\n  \"quantity\": 2\r\n}"
+				},
+				"url": {
+					"raw": "{{app_url}}/products/product_id",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products",
+						"product_id"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "6-1-7 404 edit patch product with invalid id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "219e7f78-1840-4718-83b1-9efb09a1b681",
+						"exec": [
+							"pm.test(\"404 not found\", function () {",
+							"    pm.response.to.have.status(404);",
+							"});",
+							"",
+							"",
+							"pm.test(\"404 error message\", function () {",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"No product with this product_id exists\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "11ea93c0-44e2-4b87-bb4f-a2ee58921df3",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"Edit-Denim skirt\",\r\n  \"type\": \"clothes2\",\r\n  \"price\": 18.50,\r\n  \"quantity\": 3\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/products/{{invalid_prod_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products",
+						"{{invalid_prod_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "6-1-8 edit patch Missing token 401",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1e9dd7f6-b18b-4237-9276-3d7d2fe9d2c3",
+						"exec": [
+							"pm.test(\"401 status code\", function () {",
+							"    pm.response.to.have.status(401);",
+							"});",
+							"",
+							"pm.test(\"401 error message\", function () {",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"Missing or Invalid JWT\");",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \r\n  \"price\": 500\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/products/{{product_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products",
+						"{{product_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "6-1-9 edit patch Invalid token 401",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "52dbf7cc-a39f-4412-87ac-872f564d6564",
+						"exec": [
+							"pm.test(\"401 status code\", function () {",
+							"    pm.response.to.have.status(401);",
+							"});",
+							"",
+							"pm.test(\"401 error message\", function () {",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"Missing or Invalid JWT\");",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{invalid_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \r\n  \"price\": 500\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/products/{{product_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products",
+						"{{product_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "6-1-10 400 edit patch no property Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "8e5a0402-c4e2-4a11-acb9-6f70e1aee061",
+						"exec": [
+							"pm.test(\"400 Bad Request\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"",
+							"",
+							"pm.test(\"400 error message\", function () {",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"You need to change at least one property\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/products/{{product_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products",
+						"{{product_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "6-1-11 403 edit patch not my product",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b90dddd5-bc1a-48ba-b978-ebaef60539b9",
+						"exec": [
+							"pm.test(\"403 Forbidden\", function () {",
+							"    pm.response.to.have.status(403);",
+							"});",
+							"",
+							"",
+							"pm.test(\"403 error message\", function () {",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"You can only update your product.\");",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \r\n  \"price\": 500\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/products/{{product_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products",
+						"{{product_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "6-2-1 edit put product all  property 200",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c5e22b1a-5a1b-4734-ace5-344d895e3eed",
+						"exec": [
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()[\"price\"]).to.eq(120.00);",
+							"    pm.expect(pm.response.json()[\"quantity\"]).to.eq(3);",
+							"    pm.expect(pm.response.json()[\"name\"]).to.eq(\"EditPut-Blue Spring suit\");",
+							"    pm.expect(pm.response.json()[\"type\"]).to.eq(\"clothes\");",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/products/\" + pm.response.json()[\"id\"];",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);",
+							"}); "
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"EditPut-Blue Spring suit\",\r\n  \"type\": \"clothes\",\r\n  \"price\": 120.00,\r\n  \"quantity\": 3\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/products/{{prod_id_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products",
+						"{{prod_id_1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "6-2-2  get 2nd product for all change",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "4d02061c-7340-4927-8b8a-6b01d242d303",
+						"exec": [
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()[\"price\"]).to.eq(120.00);",
+							"    pm.expect(pm.response.json()[\"quantity\"]).to.eq(3);",
+							"    pm.expect(pm.response.json()[\"name\"]).to.eq(\"EditPut-Blue Spring suit\");",
+							"    pm.expect(pm.response.json()[\"type\"]).to.eq(\"clothes\");",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/products/\" + pm.response.json()[\"id\"];",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);",
+							"}); "
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/products/{{prod_id_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products",
+						"{{prod_id_1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "6-2-3 400 edit put product only one property",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "393e8672-1d4f-451b-860e-adadb903fddc",
+						"exec": [
+							"pm.test(\"400 status code\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \r\n  \"price\":10\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/products/{{product_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products",
+						"{{product_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "6-2-4 406 edit put product with another mime type",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3bc15f14-b3cb-4e90-9fa3-38ad5f46bde2",
+						"exec": [
+							"pm.test(\"406 status code\", function () {",
+							"    pm.response.to.have.status(406);",
+							"});",
+							"",
+							"pm.test(\"406 error message\", function () {",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"Not Acceptable.\");",
+							"});",
+							"",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/javascript"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"New-Blue Spring suit\",\r\n  \"type\": \"clothes2\",\r\n  \"price\": 120.00,\r\n  \"quantity\": 3\r\n}"
+				},
+				"url": {
+					"raw": "{{app_url}}/products/product_id",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products",
+						"product_id"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "6-2-5 406 edit put product with No mime type",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "cc80d2b3-47a7-464e-8ea1-9b4d55fc10e5",
+						"exec": [
+							"pm.test(\"406 status code\", function () {",
+							"    pm.response.to.have.status(406);",
+							"});",
+							"",
+							"pm.test(\"406 error message\", function () {",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"Not Acceptable.\");",
+							"});",
+							"",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "text/css",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"New-Blue Spring suit\",\r\n  \"type\": \"clothes2\",\r\n  \"price\": 120.00,\r\n  \"quantity\": 3\r\n}"
+				},
+				"url": {
+					"raw": "{{app_url}}/products/product_id",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products",
+						"product_id"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "6-2-6 404 edit put product with invalid id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c9d5940c-a7a6-4605-b2d1-fe0d36ec0b80",
+						"exec": [
+							"pm.test(\"404 not found\", function () {",
+							"    pm.response.to.have.status(404);",
+							"});",
+							"",
+							"",
+							"pm.test(\"404 error message\", function () {",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"No product with this product_id exists\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "cc12f6dc-b853-4c76-bfd9-f23924a67df6",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"New-Blue Spring suit\",\r\n  \"type\": \"clothes2\",\r\n  \"price\": 120.00,\r\n  \"quantity\": 3\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/products/{{invalid_prod_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products",
+						"{{invalid_prod_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "6-2-7 edit Put Missing token 401",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f8fbbef8-f378-4b04-ba27-871a3163f976",
+						"exec": [
+							"pm.test(\"401 status code\", function () {",
+							"    pm.response.to.have.status(401);",
+							"});",
+							"",
+							"pm.test(\"401 error message\", function () {",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"Missing or Invalid JWT\");",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"New-Blue Spring suit\",\r\n  \"type\": \"clothes2\",\r\n  \"price\": 120.00,\r\n  \"quantity\": 3\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/products/{{product_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products",
+						"{{product_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "6-2-8 edit put Invalid token 401",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "fb0e24c5-3353-4ac0-876e-43efee3325ad",
+						"exec": [
+							"pm.test(\"401 status code\", function () {",
+							"    pm.response.to.have.status(401);",
+							"});",
+							"",
+							"pm.test(\"401 error message\", function () {",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"Missing or Invalid JWT\");",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{invalid_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"New-Blue Spring suit\",\r\n  \"type\": \"clothes2\",\r\n  \"price\": 120.00,\r\n  \"quantity\": 3\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/products/{{product_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products",
+						"{{product_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "6-2-9 403 edit put not my product",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "59a1fc7b-557b-499f-a723-8e24c37d0caf",
+						"exec": [
+							"pm.test(\"403 Forbidden\", function () {",
+							"    pm.response.to.have.status(403);",
+							"});",
+							"",
+							"",
+							"pm.test(\"403 error message\", function () {",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"You can only update your product.\");",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"New-Blue Spring suit\",\r\n  \"type\": \"clothes2\",\r\n  \"price\": 120.00,\r\n  \"quantity\": 3\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/products/{{product_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products",
+						"{{product_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "6-3 405 POST for /products/product_id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c44e0f51-0461-4613-bece-98c39b64d88c",
+						"exec": [
+							"",
+							"pm.test(\"405 status code\", function () {",
+							"    pm.response.to.have.status(405);",
+							"});",
+							"",
+							"pm.test(\"405 error message\", function () {",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"Method not recognized\");",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept-encoding": true,
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "text/html",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"clothes\",\r\n  \"location\": \"Seattle\",\r\n  \"size\": 99,\r\n  \"phone\": \"233-345-5678\"\r\n}"
+				},
+				"url": {
+					"raw": "{{app_url}}/products/{{product_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products",
+						"{{product_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "7-1 assign a load to 1st boat 204",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "8eaddf2d-a059-4b99-b06a-b11e60f1c039",
+						"exec": [
+							"pm.test(\"204 status code\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "{{app_url}}/shelves/{{shelf_id}}/products/{{product_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves",
+						"{{shelf_id}}",
+						"products",
+						"{{product_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "7-1-1  get shelf check 'products'",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3850baa1-6d2f-4726-91b2-1efb251a2cf2",
+						"exec": [
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"/*",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()[\"name\"]).to.eq(\"Odyssey\");",
+							"    pm.expect(pm.response.json()[\"type\"]).to.eq(\"Yatch\");",
+							"    pm.expect(pm.response.json()[\"length\"]).to.eq(99);",
+							"    var lid = pm.environment.get(\"load_id\");",
+							"    //lid = parseInt(lid);",
+							"    pm.expect(pm.response.json()[\"loads\"][0][\"id\"]).to.eq(lid);",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/boats/\" + pm.response.json()[\"id\"];",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);",
+							"});",
+							"*/"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/shelves/{{shelf_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves",
+						"{{shelf_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "7-1-2 get product check 'shelf'",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "6c2aa4ab-a8da-4f07-a44f-159a8deedd37",
+						"exec": [
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"/*",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()[\"weight\"]).to.eq(1);",
+							"    pm.expect(pm.response.json()[\"content\"]).to.eq(\"LEGO BLOCKS\");",
+							"    var bid = pm.environment.get(\"boat_id\");",
+							"    bid = parseInt(bid);",
+							"    pm.expect(pm.response.json()[\"carrier\"][\"id\"]).to.eq(bid);",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/loads/\" + pm.response.json()[\"id\"];",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);",
+							"});*/",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/products/{{product_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products",
+						"{{product_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "7-1-3 405 GET for adding product to a shelf",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "56463c77-60b4-48eb-a745-dcf5c3672d0b",
+						"exec": [
+							"",
+							"pm.test(\"405 status code\", function () {",
+							"    pm.response.to.have.status(405);",
+							"});",
+							"",
+							"pm.test(\"405 error message\", function () {",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"Method not recognized\");",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{app_url}}/shelves/{{shelf_id}}/products/{{product_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves",
+						"{{shelf_id}}",
+						"products",
+						"{{product_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "7-2 assign second product to 1st shelf",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "01eabc46-d3dc-4dbc-a31b-52fb6ec446ef",
+						"exec": [
+							"pm.test(\"204 status code\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "{{app_url}}/shelves/{{shelf_id}}/products/{{prod_id_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves",
+						"{{shelf_id}}",
+						"products",
+						"{{prod_id_1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "7-2-1  get shelf check 'products'",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "bf5ea4e6-35f2-49bd-81d5-d34890417e00",
+						"exec": [
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"/*",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()[\"name\"]).to.eq(\"Odyssey\");",
+							"    pm.expect(pm.response.json()[\"type\"]).to.eq(\"Yatch\");",
+							"    pm.expect(pm.response.json()[\"length\"]).to.eq(99);",
+							"    var lid = pm.environment.get(\"load_id\");",
+							"    //lid = parseInt(lid);",
+							"    pm.expect(pm.response.json()[\"loads\"][0][\"id\"]).to.eq(lid);",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/boats/\" + pm.response.json()[\"id\"];",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);",
+							"});",
+							"*/"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/shelves/{{shelf_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves",
+						"{{shelf_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "7-2-2 get 2nd product check 'shelf'",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "26fcebf4-532c-4c42-b229-ceeca64f1f67",
+						"exec": [
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"/*",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()[\"weight\"]).to.eq(1);",
+							"    pm.expect(pm.response.json()[\"content\"]).to.eq(\"LEGO BLOCKS\");",
+							"    var bid = pm.environment.get(\"boat_id\");",
+							"    bid = parseInt(bid);",
+							"    pm.expect(pm.response.json()[\"carrier\"][\"id\"]).to.eq(bid);",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/loads/\" + pm.response.json()[\"id\"];",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);",
+							"});",
+							"*/",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/products/{{prod_id_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products",
+						"{{prod_id_1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "7-3 assign 3rd product to 1st shelf 204",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "943a660f-b7de-4c7a-a44d-9099c4fc629a",
+						"exec": [
+							"pm.test(\"204 status code\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "{{app_url}}/shelves/{{shelf_id}}/products/{{prod_id_2}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves",
+						"{{shelf_id}}",
+						"products",
+						"{{prod_id_2}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "7-4 403 product is already in another shelf",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c0d9d195-b41e-44c9-9ec7-1dc1af27e30a",
+						"exec": [
+							"pm.test(\"403 Forbidden\", function () {",
+							"    pm.response.to.have.status(403);",
+							"});",
+							"",
+							"",
+							"pm.test(\"403 error message\", function () {",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"This product is already stored in another shelf.\");",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "{{app_url}}/shelves/{{shelf_id_1}}/products/{{product_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves",
+						"{{shelf_id_1}}",
+						"products",
+						"{{product_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "7-4-1 403 add product to already the same shelf",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "8cb122b9-719b-4d68-8764-2f7fd913a1b3",
+						"exec": [
+							"pm.test(\"403 status code\", function () {",
+							"    pm.response.to.have.status(403);",
+							"});",
+							"",
+							"",
+							"pm.test(\"400 error message\", function () {",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"This product is already stored in another shelf.\");",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "{{app_url}}/shelves/{{shelf_id}}/products/{{product_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves",
+						"{{shelf_id}}",
+						"products",
+						"{{product_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "7-5 404 add product with invalid shelf id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "fecf6b12-fc97-4782-b4d4-a53b33648f22",
+						"exec": [
+							"pm.test(\"404 status code\", function () {",
+							"    pm.response.to.have.status(404);",
+							"});",
+							"",
+							"",
+							"pm.test(\"400 error message\", function () {",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"The specified shelf and/or product don’t exist\");",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "{{app_url}}/shelves/{{invalid_shelf_id}}/products/{{product_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves",
+						"{{invalid_shelf_id}}",
+						"products",
+						"{{product_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "7-6 404 add invalid product id to shelf",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a826f77c-e84b-4420-bf18-949d13f5f9bd",
+						"exec": [
+							"pm.test(\"404 status code\", function () {",
+							"    pm.response.to.have.status(404);",
+							"});",
+							"",
+							"",
+							"pm.test(\"400 error message\", function () {",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"The specified shelf and/or product don’t exist\");",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "{{app_url}}/shelves/{{shelf_id}}/products/{{invalid_prod_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves",
+						"{{shelf_id}}",
+						"products",
+						"{{invalid_prod_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "7-7 404 add both invalid product and shelf id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "06aa2308-47c4-4f71-9ed5-ce91cbf6f156",
+						"exec": [
+							"pm.test(\"404 status code\", function () {",
+							"    pm.response.to.have.status(404);",
+							"});",
+							"",
+							"",
+							"pm.test(\"400 error message\", function () {",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"The specified shelf and/or product don’t exist\");",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "{{app_url}}/shelves/{{invalid_shelf_id}}/products/{{invalid_prod_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves",
+						"{{invalid_shelf_id}}",
+						"products",
+						"{{invalid_prod_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "7-8 get all products after loading for 1st user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "46225a2f-2831-4a05-8ec8-6e63ed54a0d0",
+						"exec": [
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"At least one product exists\", function () {",
+							"    pm.expect(Object.keys(pm.response.json()).length).to.be.at.least(1);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/products",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "7-9 get all shelves after loading",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "4d37988d-b49e-4e06-a9b6-41df69286c56",
+						"exec": [
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"At least one shelf exists\", function () {",
+							"    pm.expect(Object.keys(pm.response.json()).length).to.be.at.least(1);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/shelves",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "7-10  get the first shelf after loading",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "4f26eb38-3f40-4624-8a82-f03d363c9a68",
+						"exec": [
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"/*",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()[\"name\"]).to.eq(\"Odyssey\");",
+							"    pm.expect(pm.response.json()[\"type\"]).to.eq(\"Yatch\");",
+							"    pm.expect(pm.response.json()[\"length\"]).to.eq(99);",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/boats/\" + pm.response.json()[\"id\"];",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);",
+							"});*/",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/shelves/{{shelf_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves",
+						"{{shelf_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "7-11 get the first product",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d03ed744-8b74-463b-a4cc-8472b06aabc1",
+						"exec": [
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()[\"price\"]).to.eq(30);",
+							"    pm.expect(pm.response.json()[\"quantity\"]).to.eq(10);",
+							"    pm.expect(pm.response.json()[\"name\"]).to.eq(\"Denim skirt\");",
+							"    pm.expect(pm.response.json()[\"type\"]).to.eq(\"clothes\");",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/products/\" + pm.response.json()[\"id\"];",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);",
+							"}); "
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/products/{{product_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products",
+						"{{product_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "8-1 get 1st shelf before unloading",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a5dad9d9-a447-4c95-8446-621cab767f55",
+						"exec": [
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"pm.environment.unset(\"num_products\");",
+							"var prod_data = pm.response.json()[\"products\"]",
+							"var numLds = prod_data.length",
+							"pm.environment.set(\"num_products\", numLds);",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/shelves/{{shelf_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves",
+						"{{shelf_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "8-2 unassign 1st product from 1st shelf",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "9566c126-f6e9-47ec-8bbc-aeab6af932fa",
+						"exec": [
+							"pm.test(\"204 status code\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{app_url}}/shelves/{{shelf_id}}/products/{{product_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves",
+						"{{shelf_id}}",
+						"products",
+						"{{product_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "8-3 get 1st shelf after unloading",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "61e88375-512a-4a30-82fe-992a06303f1f",
+						"exec": [
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"check the number of products decrease by 1.\", function () {",
+							"    //var jsonData = pm.response.json();",
+							"    var prev_l_num = pm.environment.get(\"num_products\");",
+							"    var prod_data = pm.response.json()[\"products\"]",
+							"    var crt_l_num = prod_data.length;",
+							"    pm.expect(prev_l_num - crt_l_num).to.eql(1);",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/shelves/{{shelf_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves",
+						"{{shelf_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "8-3-1 get all shelves after unassigning a product",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1e151087-64ee-447d-b832-44b0add0c4c5",
+						"exec": [
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"At least one shelf exists\", function () {",
+							"    pm.expect(Object.keys(pm.response.json()).length).to.be.at.least(1);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/shelves",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "8-3-2 get all products after unassigning a product",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "27d8c631-be6f-4267-9d26-8f8ba221434b",
+						"exec": [
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"At least one product exists\", function () {",
+							"    pm.expect(Object.keys(pm.response.json()).length).to.be.at.least(1);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/products",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "8-4 new assign 1st product to 2nd shelf 204",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "dc4703df-b5d8-4696-a2b9-b02f3e9ead20",
+						"exec": [
+							"pm.test(\"204 status code\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "{{app_url}}/shelves/{{shelf_id_1}}/products/{{product_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves",
+						"{{shelf_id_1}}",
+						"products",
+						"{{product_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "8-5 get 2nd shelf after assigning",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "fac32315-a7c4-4cbc-a405-2928fe2719e3",
+						"exec": [
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"/*",
+							"pm.test(\"Check if loads has a id equal to 'load_id'\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    for (var i = 0; i < jsonData.length; i++) {",
+							"        id = pm.environment.get(\"load_id\");",
+							"        //id = parseInt(id);",
+							"        pm.expect(jsonData[i]['id']).to.eql(id);",
+							"",
+							"    }",
+							"});*/"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/shelves/{{shelf_id_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves",
+						"{{shelf_id_1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "8-5-1 get the first product after reassining",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "e983dd7b-8523-4866-ab85-fb496ec00a93",
+						"exec": [
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()[\"price\"]).to.eq(30);",
+							"    pm.expect(pm.response.json()[\"quantity\"]).to.eq(10);",
+							"    pm.expect(pm.response.json()[\"name\"]).to.eq(\"Denim skirt\");",
+							"    pm.expect(pm.response.json()[\"type\"]).to.eq(\"clothes\");",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/products/\" + pm.response.json()[\"id\"];",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);",
+							"}); "
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/products/{{product_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products",
+						"{{product_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "8-6 403 unload from a wrong shelf",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "07583419-8a29-42b9-b7cb-0372d2d3ff13",
+						"exec": [
+							"pm.test(\"404 status code\", function () {",
+							"    pm.response.to.have.status(403);",
+							"});",
+							"",
+							"",
+							"pm.test(\"400 error message\", function () {",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"The shelf and product doesn't match\");",
+							"});",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{app_url}}/shelves/{{shelf_id}}/products/{{product_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves",
+						"{{shelf_id}}",
+						"products",
+						"{{product_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "8-7 404 unassign a product from an invalid shelf",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "e4c2ec3a-4950-45c7-935c-a150f09d8472",
+						"exec": [
+							"pm.test(\"404 status code\", function () {",
+							"    pm.response.to.have.status(404);",
+							"});",
+							"",
+							"",
+							"pm.test(\"400 error message\", function () {",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"The specified shelf and/or product don’t exist\");",
+							"});",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{app_url}}/shelves/{{invalid_shelf_id}}/products/{{product_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves",
+						"{{invalid_shelf_id}}",
+						"products",
+						"{{product_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "8-8 404 unload with an invalid product id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "bf9f1cdc-7bb8-4d4d-be1b-18ab09cb0b05",
+						"exec": [
+							"pm.test(\"404 status code\", function () {",
+							"    pm.response.to.have.status(404);",
+							"});",
+							"",
+							"",
+							"pm.test(\"400 error message\", function () {",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"The specified shelf and/or product don’t exist\");",
+							"});",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{app_url}}/shelves/{{shelf_id}}/products/{{invalid_prod_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves",
+						"{{shelf_id}}",
+						"products",
+						"{{invalid_prod_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "9-1 get all users 200",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "176db257-c103-4a0e-b77b-8a9298788427",
+						"exec": [
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/users",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "9-1-1 get users No mime 406",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "2af603f1-02ff-4100-9812-1e49fb27117a",
+						"exec": [
+							"pm.test(\"406 status code\", function () {",
+							"    pm.response.to.have.status(406);",
+							"});",
+							"",
+							"pm.test(\"406 error message\", function () {",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"Not Acceptable.\");",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/users",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "9-1-2 get users different mime 406",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "4f6d9a22-f79f-47ff-b103-198244e72ffb",
+						"exec": [
+							"pm.test(\"406 status code\", function () {",
+							"    pm.response.to.have.status(406);",
+							"});",
+							"",
+							"pm.test(\"406 error message\", function () {",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"Not Acceptable.\");",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/pdf"
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/users",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "9-2 DELETE users 405",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "53eca336-3e86-45a6-8ccf-875cb6f619f5",
+						"exec": [
+							"pm.test(\"405 status code\", function () {",
+							"    pm.response.to.have.status(405);",
+							"});",
+							"pm.test(\"405 error message\", function () {",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"Method not recognized\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{app_url}}/users",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "9-3 get products of a user(1st user)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c6eab2ac-0f8a-43b2-a459-97dd5ffccfd1",
+						"exec": [
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/users/{{user_id1}}/products",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"users",
+						"{{user_id1}}",
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "9-4 get products of a shelf (1st shelf)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "64413cc2-9453-43ab-86d5-c2b65016aa81",
+						"exec": [
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/shelves/{{shelf_id}}/products",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves",
+						"{{shelf_id}}",
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "10-1 delete 2nd shelf with 1st product",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a8135f36-d3ba-41f7-ab9f-c53ad5a34f7f",
+						"exec": [
+							"pm.test(\"204 no content\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{app_url}}/shelves/{{shelf_id_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves",
+						"{{shelf_id_1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "10-1-1 get 1st product",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "44003979-e537-4011-9e5b-356c41be5b89",
+						"exec": [
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()[\"price\"]).to.eq(30);",
+							"    pm.expect(pm.response.json()[\"quantity\"]).to.eq(10);",
+							"    pm.expect(pm.response.json()[\"name\"]).to.eq(\"Denim skirt\");",
+							"    pm.expect(pm.response.json()[\"type\"]).to.eq(\"clothes\");",
+							"    pm.expect(pm.response.json()[\"shelf\"]).to.eq(null);",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/products/\" + pm.response.json()[\"id\"];",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);",
+							"}); ",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/products/{{product_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products",
+						"{{product_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "10-2 delete 1st product 204",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "603c88a2-6193-43e5-8802-824392159c6c",
+						"exec": [
+							"pm.test(\"204 no content\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{app_url}}/products/{{product_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products",
+						"{{product_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "10-3 delete 3rd shelf(no product) 204",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "2a1f7675-6125-4bf4-a5c6-fadbbdc90109",
+						"exec": [
+							"pm.test(\"204 no content\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{app_url}}/shelves/{{shelf_id_2}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves",
+						"{{shelf_id_2}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "10-4 get all shelves after deleting 3rd shelf",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "484d1b00-106e-4114-8a9e-461852d2191f",
+						"exec": [
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"At least one boat exists\", function(){",
+							"   pm.expect(Object.keys(pm.response.json()).length).to.be.at.least(1);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/shelves",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "10-5 delete shelf with invalid id 404",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "8dbe7cd4-dc78-4194-8aa3-d027f9a40b73",
+						"exec": [
+							"pm.test(\"404 not found\", function () {",
+							"    pm.response.to.have.status(404);",
+							"});",
+							"",
+							"",
+							"pm.test(\"404 error message\", function () {",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"No shelf with this shelf_id exists\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{app_url}}/shelves/{{invalid_shelf_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves",
+						"{{invalid_shelf_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "10-5-1 delete product Invalid token 401",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "fe7243f2-d876-42d3-9058-8e80cd2a6637",
+						"exec": [
+							"pm.test(\"401 status code\", function () {",
+							"    pm.response.to.have.status(401);",
+							"});",
+							"",
+							"pm.test(\"401 error message\", function () {",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"Missing or Invalid JWT\");",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{invalid_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"New-Blue Spring suit\",\r\n  \"type\": \"clothes2\",\r\n  \"price\": 120.00,\r\n  \"quantity\": 3\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/products/{{product_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products",
+						"{{product_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "10-5-2 delete product Missing token 401",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "6e3c3119-4199-446b-9b95-a66db3c17739",
+						"exec": [
+							"pm.test(\"401 status code\", function () {",
+							"    pm.response.to.have.status(401);",
+							"});",
+							"",
+							"pm.test(\"401 error message\", function () {",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"Missing or Invalid JWT\");",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"New-Blue Spring suit\",\r\n  \"type\": \"clothes2\",\r\n  \"price\": 120.00,\r\n  \"quantity\": 3\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/products/{{product_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products",
+						"{{product_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "10-6-1 get 1st shlef before deleting 2nd product",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "625fa792-f02f-4108-b17c-7176c4bb56c3",
+						"exec": [
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"pm.environment.unset(\"num_pts\");",
+							"//var jsonData = JSON.parse(responseBody);",
+							"//var numLds = jsonData.length.toString();",
+							"var prod_data = pm.response.json()[\"products\"]",
+							"var numLds = prod_data.length",
+							"pm.environment.set(\"num_pts\", numLds);",
+							"",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/shelves/{{shelf_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves",
+						"{{shelf_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "10-6-2 delete 2nd product before deleting 1st shelf",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "75ff8381-c5dc-4ee9-84f6-b5a335c02512",
+						"exec": [
+							"pm.test(\"204 no content\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{app_url}}/products/{{prod_id_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products",
+						"{{prod_id_1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "10-6-3 get 1st shlef aftering deleting 2nd product",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ad7bc8a4-7fe5-4c98-98c2-7810f31db0fe",
+						"exec": [
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"check the number of products decrease by 1.\", function () {",
+							"    //var jsonData = pm.response.json();",
+							"    var prev_l_num = pm.environment.get(\"num_pts\");",
+							"    var prod_data = pm.response.json()[\"products\"]",
+							"    var crt_l_num = prod_data.length;",
+							"    pm.expect(prev_l_num - crt_l_num).to.eql(1);",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/shelves/{{shelf_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves",
+						"{{shelf_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "10-7 204 delete 1st shelf",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ad6aebe6-f177-4273-a3c6-9fbad35127ee",
+						"exec": [
+							"pm.test(\"204 no content\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{app_url}}/shelves/{{shelf_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves",
+						"{{shelf_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "10-7-1 404 delete 1st shelf Again",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "900039a8-bace-458e-bb46-2ebddaadbbdf",
+						"exec": [
+							"pm.test(\"404 not found\", function () {",
+							"    pm.response.to.have.status(404);",
+							"});",
+							"",
+							"",
+							"pm.test(\"404 error message\", function () {",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"No shelf with this shelf_id exists\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{app_url}}/shelves/{{shelf_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves",
+						"{{shelf_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "10-7-2 get all products after deleting 1st shelf",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "483949d7-9cda-4f5d-bb7b-35b2b4925a2c",
+						"exec": [
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"At least one product exists\", function () {",
+							"    pm.expect(Object.keys(pm.response.json()).length).to.be.at.least(1);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/products",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "10-7-3 404 delete shelf with invalid id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "171c0222-e89a-4c7e-a967-6bf2fe1638d0",
+						"exec": [
+							"pm.test(\"404 not found\", function () {",
+							"    pm.response.to.have.status(404);",
+							"});",
+							"",
+							"",
+							"pm.test(\"404 error message\", function () {",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"No shelf with this shelf_id exists\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{app_url}}/shelves/{{invalid_shelf_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves",
+						"{{invalid_shelf_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "10-8-1 204 delete 4th shelf",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3e95c154-8cc1-4995-b00d-2218f19edfbd",
+						"exec": [
+							"pm.test(\"204 no content\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{app_url}}/shelves/{{shelf_id_3}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves",
+						"{{shelf_id_3}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "10-8-2 204 delete 5th shelf",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d7f1ad01-dd15-48e7-8abd-5622c82de7de",
+						"exec": [
+							"pm.test(\"204 no content\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{app_url}}/shelves/{{shelf_id_4}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves",
+						"{{shelf_id_4}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "10-8-3 204 delete 6th shelf",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "89035621-7ffa-4d3d-9b39-6d150fa815aa",
+						"exec": [
+							"pm.test(\"204 no content\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{app_url}}/shelves/{{shelf_id_5}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"shelves",
+						"{{shelf_id_5}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "10-9 404 delete product invalid_id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0790f282-44c8-47e6-b0f8-5b7663401787",
+						"exec": [
+							"pm.test(\"404 not found\", function () {",
+							"    pm.response.to.have.status(404);",
+							"});",
+							"",
+							"",
+							"pm.test(\"404 error message\", function () {",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"No product with this product_id exists\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{app_url}}/products/{{invalid_prod_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products",
+						"{{invalid_prod_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "10-9-1 delete 3rd product 204",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "4264b658-32e6-4a19-a360-c9b56ac2fe82",
+						"exec": [
+							"pm.test(\"204 no content\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{app_url}}/products/{{prod_id_2}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products",
+						"{{prod_id_2}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "10-9-2 delete 4th product 204",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "7f8347d2-7fcc-46a6-bc1d-081e40491379",
+						"exec": [
+							"pm.test(\"204 no content\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{app_url}}/products/{{prod_id_3}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products",
+						"{{prod_id_3}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "10-9-3 delete 5th product 204",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a5328566-b1c5-4647-bf46-7311da9475b6",
+						"exec": [
+							"pm.test(\"204 no content\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{app_url}}/products/{{prod_id_4}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products",
+						"{{prod_id_4}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "10-9-4 delete 6th product 204",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f8410e92-2fc4-4c38-bbf2-ba4f90ded2bf",
+						"exec": [
+							"pm.test(\"204 no content\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{app_url}}/products/{{prod_id_5}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products",
+						"{{prod_id_5}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "10-9-5 delete 7th product 204",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "6139bac0-a954-49d4-b2c5-23689c227799",
+						"exec": [
+							"pm.test(\"204 no content\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{app_url}}/products/{{prod_id_6}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products",
+						"{{prod_id_6}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "10-9-6 403 delete other's product",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b11997f8-01f6-4c4f-af17-477089cbdcfe",
+						"exec": [
+							"pm.test(\"403 Forbidden\", function () {",
+							"    pm.response.to.have.status(403);",
+							"});",
+							"",
+							"",
+							"pm.test(\"403 error message\", function () {",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"You can only delete your product.\");",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{app_url}}/products/{{prod_id_7}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products",
+						"{{prod_id_7}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "10-9-7 delete 8th product 204",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "11181619-1b33-413a-a74f-7bca81235cc2",
+						"exec": [
+							"pm.test(\"204 no content\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{app_url}}/products/{{prod_id_7}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products",
+						"{{prod_id_7}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "10-9-8 404 delete 8th product again",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "caf9b0e5-9ad1-46cb-b80a-c44dc86d9544",
+						"exec": [
+							"pm.test(\"404 not found\", function () {",
+							"    pm.response.to.have.status(404);",
+							"});",
+							"",
+							"",
+							"pm.test(\"404 error message\", function () {",
+							"    pm.expect(pm.response.json()[\"Error\"]).to.eq(\"No product with this product_id exists\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{app_url}}/products/{{prod_id_7}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"products",
+						"{{prod_id_7}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "8f01e92e-a1ab-41b1-b86d-173a20b7a892",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "d4dc3149-f7c5-4bb5-9bec-00f63c6f629d",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"protocolProfileBehavior": {}
+}
