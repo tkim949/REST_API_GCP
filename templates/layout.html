@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>OSU CS493 2020Spr Final Project: kimtaeky</title>
+    <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='style.css')}}">
+</head>
+<body>
+     <div class="intro">
+        <h3>CS493 Final Project</h3>
+        <p>***The purpose of this app is for the final project of CS493.***</p>
+    </div>
+    <div class="bcon">
+    
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    {% block content %}
+    {% endblock %}
+
+    </div>
+</body>
+</html>
